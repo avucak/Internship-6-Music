@@ -9,5 +9,11 @@ namespace Music.Classes
         public int ArtistId { get; set; }
         public string Name { get; set; }
         public string Nationality { get; set; }
+        public List<Album> Albums { get; set; }
+
+        public Artist()
+        {
+            Albums = new List<Album>();
+        }
     }
 }
