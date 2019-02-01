@@ -10,15 +10,20 @@ namespace Music
     {
         static void Main(string[] args)
         {
+            System.Collections.Generic.IEnumerable<Artist> artists;
+            System.Collections.Generic.IEnumerable<Album> albums;
+            System.Collections.Generic.IEnumerable<Song> songs;
+            System.Collections.Generic.IEnumerable<AlbumSong> albumSongs;
             var connectionString="Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog = MusicDatabase;Integrated Security=true;MultipleActiveResultSets = true";
             using (var connection = new SqlConnection(connectionString))
             {
-                var artists = connection.Query<Artist>("select * from Artist");
-                var albums = connection.Query<Album>("select * from Album");
-                var songs = connection.Query<Song>("select * from Song");
-                var albumSongs = connection.Query<AlbumSong>("select * from AlbumSong");
-                
-                //dodamo svim glazbenicima njihove albume
+                artists = connection.Query<Artist>("select * from Artist");
+                albums = connection.Query<Album>("select * from Album");
+                songs = connection.Query<Song>("select * from Song");
+                albumSongs = connection.Query<AlbumSong>("select * from AlbumSong");
+            }
+
+            //dodamo svim glazbenicima njihove albume
                 foreach (var artist in artists)
                 {
                     foreach (var album in albums)
@@ -29,7 +34,7 @@ namespace Music
                 }
                 
 
-                //dodamo svim albumima njihove pjesme
+                //dodamo svim albumima njihove pjesme i pjesmama albume
                 foreach (var album in albums)
                     foreach (var song in songs)
                         foreach (var albumSong in albumSongs)
@@ -49,7 +54,7 @@ namespace Music
 
                 //svi glazbenici određene nacionalnosti
                 var americanArtists = artists.Where(artist => artist.Nationality == "American");
-                Console.WriteLine("Svi glazbenici kojima je nacionalnost \"American\"");
+                Console.WriteLine("\nSvi glazbenici kojima je nacionalnost \"American\"");
                 foreach (var artist in americanArtists)
                 {
                     Console.WriteLine($"Name:{artist.Name} Nationality:{artist.Nationality}");
@@ -96,12 +101,13 @@ namespace Music
                 {
                     Console.WriteLine(albumNameAndLength);
                 }
+
                 //Console.WriteLine("Provjera za Zaba");
                 //var zaba = albums.First(album => album.Name == "Zaba");
                 //var songsFromZaba = songs.Where(song => song.Albums.Contains(zaba));
                 //foreach (var song in songsFromZaba)
                 //{
-                //    Console.WriteLine(song.Name+" "+Math.Round(song.Length,2));
+                //    Console.WriteLine(song.Name + " " + Math.Round(song.Length, 2));
                 //}
 
                 //Svi albumi na kojima se pojavljuje zadana pjesma
@@ -131,7 +137,7 @@ namespace Music
                 }
 
                 year = 2015;
-                Console.WriteLine($"Pjesme glazbenika {chosenArtist.Name} na albumima izdanim nakon {year}");
+                Console.WriteLine($"\nPjesme glazbenika {chosenArtist.Name} na albumima izdanim nakon {year}");
                 albumsFromSelectedArtistPublishedAfterSelectedYear = albums.Where(album =>
                     (album.YearPublished >= year && album.ArtistId == chosenArtist.ArtistId));
                 foreach (var album in albumsFromSelectedArtistPublishedAfterSelectedYear)
@@ -143,10 +149,7 @@ namespace Music
                         Console.WriteLine($"Pjesma {song.Name} je na albumu {album.Name} izdanom {album.YearPublished} ");
                     }
                 }
-
-
-            }
-
+                
         }
     }
 }
